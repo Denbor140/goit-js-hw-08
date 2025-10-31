@@ -83,14 +83,6 @@ function getGallerry(images) {
 
 getGallerry(images);
 
-// ЗАБОРОНЯЄМО ПРИ КЛІКУ ВІДКРИВАННЯ ЗОБРАЖЕННЯ
-const galleryLink = document.querySelectorAll('.gallery-link');
-galleryLink.forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-  });
-});
-
 // МОДАЛКА
 const gallery = document.querySelector('.gallery');
 
@@ -100,17 +92,22 @@ function getDataImg(event) {
   if (event.target.nodeName !== 'IMG') {
     return;
   }
+  event.preventDefault();
   console.log(event.target.dataset.source);
   //   СТВОРЕННЯ МОДАЛКИ
   const largeImg = event.target.dataset.source;
+  const altText = event.target.alt;
+
   const instance = basicLightbox.create(`
-    <img src="${largeImg}">
+    <img src="${largeImg}" alt="${altText}">
 `);
   instance.show();
   // ЗАКРИВАЄМО МОДАЛКУ ЗА ДОПОМОГОЮ "ЕСКАПЕ"
-  document.addEventListener('keydown', e => {
+  const modalClose = e => {
     if (e.code === 'Escape') {
       instance.close();
+      document.removeEventListener('keydown', modalClose);
     }
-  });
+  };
+  document.addEventListener('keydown', modalClose);
 }
